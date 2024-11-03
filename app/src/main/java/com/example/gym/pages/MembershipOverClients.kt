@@ -246,7 +246,7 @@ private fun DetailRow(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-private fun parseToLocalDate(dateString: String, format: String = "yyyy-MM-dd"): LocalDate? {
+fun parseToLocalDate(dateString: String, format: String = "yyyy-MM-dd"): LocalDate? {
     return try {
         val formatter = DateTimeFormatter.ofPattern(format)
         LocalDate.parse(dateString, formatter)

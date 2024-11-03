@@ -4,6 +4,7 @@ import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -164,10 +165,7 @@ fun AddClient(
                         )
 
                         // Package Plan Dropdown
-                        ExposedDropdownMenuBox(
-                            expanded = isDropdownExpanded,
-                            onExpandedChange = { isDropdownExpanded = !isDropdownExpanded }
-                        ) {
+                        Box {
                             OutlinedTextField(
                                 value = packagePlan,
                                 onValueChange = {},
@@ -181,12 +179,18 @@ fun AddClient(
                                     )
                                 },
                                 trailingIcon = {
-                                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded)
+                                    IconButton(onClick = { isDropdownExpanded = !isDropdownExpanded }) {
+                                        Icon(
+                                            imageVector = if (isDropdownExpanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
+                                            contentDescription = null
+                                        )
+                                    }
                                 },
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = TextFieldDefaults.outlinedTextFieldColors()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { isDropdownExpanded = !isDropdownExpanded }
                             )
-                            ExposedDropdownMenu(
+                            DropdownMenu(
                                 expanded = isDropdownExpanded,
                                 onDismissRequest = { isDropdownExpanded = false }
                             ) {

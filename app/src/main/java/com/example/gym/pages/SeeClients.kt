@@ -1,5 +1,7 @@
 package com.example.gymz.pages
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,9 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.gym.pages.parseToLocalDate
 import com.example.gymz.objs.Client
 import com.example.gymz.vms.ClientViewModel
+import java.time.LocalDate
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SeeClients(
@@ -27,7 +32,9 @@ fun SeeClients(
     }
 
     val clientsList = clientViewModel.clientsList.observeAsState(emptyList())
-
+    val clientCount = clientsList.value.count { client ->
+        parseToLocalDate(client.endDate)?.isBefore(LocalDate.now()) == false
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -74,7 +81,7 @@ fun SeeClients(
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                         Text(
-                            text = "${clientsList.value.size}",
+                            text = "${clientCount}",
                             style = MaterialTheme.typography.headlineMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -94,14 +101,16 @@ fun SeeClients(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(clientsList.value) { client ->
-                    ClientItem(client)
+                    if (parseToLocalDate(client.endDate)?.isBefore(LocalDate.now()) == false){
+                        ClientItem(client)
+                    }
                 }
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun ClientItem(client: Client) {
     ElevatedCard(
